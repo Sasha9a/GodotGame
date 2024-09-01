@@ -21,6 +21,8 @@ public partial class Player : CharacterBody2D {
 	private State _state = State.Move;
 	private float _runSpeed = 0.5f;
 
+	private bool _isAnimSetCallback;
+
 	public override void _Ready() {
 		_animNode = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		_animPlayerNode = GetNode<AnimationPlayer>("AnimationPlayer");
@@ -121,10 +123,9 @@ public partial class Player : CharacterBody2D {
 
 	private void SlideState() {
 		_animPlayerNode.Play("Slide");
-		Callable callable = new Callable(this, "SlideFinish");
-		GD.Print(_animPlayerNode.IsConnected("animation_finished", callable));
-		if (!_animPlayerNode.IsConnected("animation_finished", callable)) {
+		if (!_isAnimSetCallback) {
 			_animPlayerNode.AnimationFinished += SlideFinish;
+			_isAnimSetCallback = true;
 		}
 	}
 
@@ -136,6 +137,7 @@ public partial class Player : CharacterBody2D {
 
 	private void SlideFinish(StringName name) {
 		_animPlayerNode.AnimationFinished -= SlideFinish;
+		_isAnimSetCallback = false;
 		_state = State.Move;
 	}
 }

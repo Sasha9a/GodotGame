@@ -623,9 +623,6 @@ animations = [{
 "speed": 10.0
 }]
 
-[sub_resource type="Animation" id="Animation_i4w26"]
-length = 0.001
-
 [sub_resource type="Animation" id="Animation_x5mai"]
 length = 0.666667
 step = 0.1
@@ -871,6 +868,9 @@ tracks/1/keys = {
 "update": 1,
 "values": ["Jump"]
 }
+
+[sub_resource type="Animation" id="Animation_i4w26"]
+length = 0.001
 
 [sub_resource type="Animation" id="Animation_j7pof"]
 length = 0.8
