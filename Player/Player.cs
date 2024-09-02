@@ -20,6 +20,10 @@ public partial class Player : CharacterBody2D {
 	private int _gold;
 	private State _state = State.Move;
 	private float _runSpeed = 0.5f;
+	private bool _combo;
+
+	private SceneTreeTimer _attackCooldownTimer;
+	private bool _attackCooldown;
 
 	private bool _isAnimSetCallback;
 
@@ -39,6 +43,15 @@ public partial class Player : CharacterBody2D {
 			case State.Slide:
 				SlideState();
 				break;
+			case State.Attack:
+				AttackState();
+				break;
+			case State.Attack2:
+				Attack2State();
+				break;
+			case State.Attack3:
+				Attack3State();
+				break;
 		}
 
 		// Add the gravity.
@@ -47,7 +60,7 @@ public partial class Player : CharacterBody2D {
 		}
 
 		// Handle Jump.
-		if (Input.IsActionJustPressed("attack") && IsOnFloor()) {
+		if (Input.IsActionJustPressed("jump") && IsOnFloor()) {
 			Velocity = new Vector2(Velocity.X, JumpVelocity);
 			_animPlayerNode.Play("Jump");
 		}
@@ -111,6 +124,10 @@ public partial class Player : CharacterBody2D {
 		} else if (Input.IsActionPressed("block") && Velocity.X != 0f) {
 			_state = State.Slide;
 		}
+
+		if (Input.IsActionJustPressed("attack") && !_attackCooldown) {
+			_state = State.Attack;
+		}
 	}
 
 	private void BlockState() {
@@ -129,6 +146,37 @@ public partial class Player : CharacterBody2D {
 		}
 	}
 
+	private void AttackState() {
+		if (Input.IsActionJustPressed("attack") && _combo) {
+			_state = State.Attack2;
+		}
+		Velocity = new Vector2(0, Velocity.Y);
+		_animPlayerNode.Play("Attack");
+		if (!_isAnimSetCallback) {
+			_animPlayerNode.AnimationFinished += AttackFinish;
+			_isAnimSetCallback = true;
+		}
+	}
+	
+	private void Attack2State() {
+		if (Input.IsActionJustPressed("attack") && _combo) {
+			_state = State.Attack3;
+		}
+		_animPlayerNode.Play("Attack2");
+		if (!_isAnimSetCallback) {
+			_animPlayerNode.AnimationFinished += Attack1Finish;
+			_isAnimSetCallback = true;
+		}
+	}
+	
+	private void Attack3State() {
+		_animPlayerNode.Play("Attack3");
+		if (!_isAnimSetCallback) {
+			_animPlayerNode.AnimationFinished += Attack1Finish;
+			_isAnimSetCallback = true;
+		}
+	}
+
 	private void Death(StringName name) {
 		_animPlayerNode.AnimationFinished -= Death;
 		QueueFree();
@@ -139,5 +187,43 @@ public partial class Player : CharacterBody2D {
 		_animPlayerNode.AnimationFinished -= SlideFinish;
 		_isAnimSetCallback = false;
 		_state = State.Move;
+	}
+	
+	private void AttackFinish(StringName name) {
+		_animPlayerNode.AnimationFinished -= AttackFinish;
+		AttackFreeze();
+		_isAnimSetCallback = false;
+		_state = State.Move;
+	}
+	
+	private void Attack1Finish(StringName name) {
+		_animPlayerNode.AnimationFinished -= Attack1Finish;
+		_isAnimSetCallback = false;
+		_state = State.Move;
+	}
+
+	private void Combo1() {
+		_combo = true;
+		if (!_isAnimSetCallback) {
+			_animPlayerNode.AnimationFinished += FinishCombo1;
+			_isAnimSetCallback = true;
+		}
+	}
+
+	private void FinishCombo1(StringName name) {
+		_animPlayerNode.AnimationFinished -= FinishCombo1;
+		_isAnimSetCallback = false;
+		_combo = false;
+	}
+
+	private void AttackFreeze() {
+		_attackCooldown = true;
+		_attackCooldownTimer = GetTree().CreateTimer(0.5f);
+		_attackCooldownTimer.Timeout += AttackFreezeFinish;
+	}
+
+	private void AttackFreezeFinish() {
+		_attackCooldownTimer.Timeout -= AttackFreezeFinish;
+		_attackCooldown = false;
 	}
 }
