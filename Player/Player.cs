@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 public partial class Player : CharacterBody2D {
-	enum State {
+	private enum State {
 		Move,
 		Attack,
 		Attack2,
