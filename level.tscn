@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://b6wqhg16n7ksj"]
+[gd_scene load_steps=12 format=3 uid="uid://b6wqhg16n7ksj"]
 
 [ext_resource type="PackedScene" uid="uid://pcqjjul3cipu" path="res://Player/player.tscn" id="1_1ech4"]
 [ext_resource type="Texture2D" uid="uid://cae8vd8hgn0cn" path="res://oak_woods_v1.0/background/background_layer_1.png" id="3_xoq3e"]
 [ext_resource type="Texture2D" uid="uid://cjng5433xuwdb" path="res://oak_woods_v1.0/background/background_layer_2.png" id="4_6bis2"]
 [ext_resource type="Texture2D" uid="uid://np8x3dwwyld3" path="res://oak_woods_v1.0/oak_woods_tileset.png" id="5_fdoos"]
+[ext_resource type="PackedScene" uid="uid://bny1l6h2xp4q4" path="res://Build/shop.tscn" id="5_kqjg8"]
 [ext_resource type="Texture2D" uid="uid://dra8unyshw5jt" path="res://oak_woods_v1.0/background/background_layer_3.png" id="5_mk4dl"]
 [ext_resource type="Script" path="res://HealthLabel.cs" id="7_jrrv5"]
 [ext_resource type="Script" path="res://GoldLabel.cs" id="8_hbqa0"]
@@ -429,6 +430,7 @@ sources/1 = SubResource("TileSetAtlasSource_b0emj")
 [node name="Level" type="Node2D"]
 
 [node name="BG" type="ParallaxBackground" parent="."]
+layer = -1
 offset = Vector2(0, 260)
 scale = Vector2(0.5, 0.5)
 transform = Transform2D(0.5, 0, 0, 0.5, 0, 260)
@@ -459,6 +461,9 @@ position = Vector2(578, 323)
 scale = Vector2(3.625, 3.64444)
 texture = ExtResource("5_mk4dl")
 
+[node name="Shop" parent="." instance=ExtResource("5_kqjg8")]
+position = Vector2(85, 535)
+
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_3umig")
 format = 2
@@ -467,7 +472,7 @@ layer_0/tile_data = PackedInt32Array(2359296, 65537, 0, 2359297, 131073, 0, 2359
 [node name="Player" type="Node2D" parent="."]
 
 [node name="Player" parent="Player" instance=ExtResource("1_1ech4")]
-position = Vector2(234, 551)
+position = Vector2(254, 559)
 
 [node name="Mobs" type="Node2D" parent="."]
 
@@ -497,5 +502,10 @@ script = ExtResource("9_l2iy7")
 [node name="Timer" type="Timer" parent="Collectibles"]
 wait_time = 3.0
 autostart = true
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+energy = 0.2
+blend_mode = 1
+range_layer_min = -1
 
 [connection signal="timeout" from="Collectibles/Timer" to="Collectibles" method="_on_timer_timeout"]

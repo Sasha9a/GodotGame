@@ -1008,9 +1008,8 @@ shape = SubResource("CapsuleShape2D_bc3th")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(1, -13)
 sprite_frames = SubResource("SpriteFrames_7i3ay")
-animation = &"Attack2"
+animation = &"Idle"
 autoplay = "Idle"
-frame = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(2.4, 2.4)
