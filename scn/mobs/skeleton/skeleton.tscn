@@ -1,6 +1,6 @@
 [gd_scene load_steps=25 format=3 uid="uid://cxb8pqbuvj6f6"]
 
-[ext_resource type="Script" path="res://scn/mobs/Skeleton.cs" id="1_m8tbp"]
+[ext_resource type="Script" path="res://scn/mobs/skeleton/Skeleton.cs" id="1_m8tbp"]
 [ext_resource type="Texture2D" uid="uid://dkp5ghtuhweuh" path="res://assets/oak_woods_v1.0/Skeleton/Take Hit.png" id="1_ul3lt"]
 [ext_resource type="Texture2D" uid="uid://bgflqtettx4d" path="res://assets/oak_woods_v1.0/Skeleton/Death.png" id="2_2uttc"]
 [ext_resource type="Texture2D" uid="uid://cjnitpeo2moe3" path="res://assets/oak_woods_v1.0/Skeleton/Idle.png" id="3_a4okv"]
