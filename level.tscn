@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://b6wqhg16n7ksj"]
+[gd_scene load_steps=15 format=3 uid="uid://b6wqhg16n7ksj"]
 
 [ext_resource type="PackedScene" uid="uid://pcqjjul3cipu" path="res://Player/player.tscn" id="1_1ech4"]
+[ext_resource type="Script" path="res://Level.cs" id="1_lif2i"]
 [ext_resource type="Texture2D" uid="uid://cae8vd8hgn0cn" path="res://oak_woods_v1.0/background/background_layer_1.png" id="3_xoq3e"]
 [ext_resource type="Texture2D" uid="uid://cjng5433xuwdb" path="res://oak_woods_v1.0/background/background_layer_2.png" id="4_6bis2"]
 [ext_resource type="Texture2D" uid="uid://np8x3dwwyld3" path="res://oak_woods_v1.0/oak_woods_tileset.png" id="5_fdoos"]
@@ -9,6 +10,7 @@
 [ext_resource type="Script" path="res://HealthLabel.cs" id="7_jrrv5"]
 [ext_resource type="Script" path="res://GoldLabel.cs" id="8_hbqa0"]
 [ext_resource type="Script" path="res://Collectibles.cs" id="9_l2iy7"]
+[ext_resource type="Texture2D" uid="uid://1y8hg5oig7fe" path="res://oak_woods_v1.0/decorations/circle.png" id="11_ua4ls"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_b0emj"]
 texture = ExtResource("5_fdoos")
@@ -427,7 +429,11 @@ texture = ExtResource("5_fdoos")
 physics_layer_0/collision_layer = 1
 sources/1 = SubResource("TileSetAtlasSource_b0emj")
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_m0p2d"]
+polygon = PackedVector2Array(-5087, 584, -5088, 689, 5072, 688, 5072, 582)
+
 [node name="Level" type="Node2D"]
+script = ExtResource("1_lif2i")
 
 [node name="BG" type="ParallaxBackground" parent="."]
 layer = -1
@@ -504,8 +510,24 @@ wait_time = 3.0
 autostart = true
 
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
-energy = 0.2
+energy = 0.95
 blend_mode = 1
 range_layer_min = -1
 
+[node name="DayNight" type="Timer" parent="."]
+wait_time = 30.0
+autostart = true
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(37, 548)
+scale = Vector2(0.57, 0.57)
+color = Color(0.924801, 0.710837, 0.576536, 1)
+energy = 1.5
+shadow_enabled = true
+texture = ExtResource("11_ua4ls")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+occluder = SubResource("OccluderPolygon2D_m0p2d")
+
 [connection signal="timeout" from="Collectibles/Timer" to="Collectibles" method="_on_timer_timeout"]
+[connection signal="timeout" from="DayNight" to="." method="_on_day_night_timeout"]

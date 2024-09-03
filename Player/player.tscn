@@ -1,9 +1,10 @@
-[gd_scene load_steps=100 format=3 uid="uid://pcqjjul3cipu"]
+[gd_scene load_steps=102 format=3 uid="uid://pcqjjul3cipu"]
 
 [ext_resource type="Texture2D" uid="uid://y3lcluj7010m" path="res://oak_woods_v1.0/character/char_blue.png" id="1_0sivr"]
 [ext_resource type="Script" path="res://Player/Player.cs" id="1_5lhbe"]
 [ext_resource type="Texture2D" uid="uid://cqpi2s70g4v1x" path="res://oak_woods_v1.0/character/blue/char_blue_1.png" id="2_ojqep"]
 [ext_resource type="Texture2D" uid="uid://dyrhcbeje2i6x" path="res://oak_woods_v1.0/character/blue/char_blue_2.png" id="3_uv1v6"]
+[ext_resource type="Texture2D" uid="uid://1y8hg5oig7fe" path="res://oak_woods_v1.0/decorations/circle.png" id="5_x428u"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bc3th"]
 
@@ -999,6 +1000,9 @@ _data = {
 "Walk": SubResource("Animation_5vbps")
 }
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_sykwi"]
+polygon = PackedVector2Array(-50, 164.286, -57.1429, 178.571, 50, 178.571, 42.8571, 164.286)
+
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_5lhbe")
 
@@ -1008,7 +1012,7 @@ shape = SubResource("CapsuleShape2D_bc3th")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(1, -13)
 sprite_frames = SubResource("SpriteFrames_7i3ay")
-animation = &"Idle"
+animation = &"Attack"
 autoplay = "Idle"
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -1024,3 +1028,14 @@ drag_horizontal_enabled = true
 libraries = {
 "": SubResource("AnimationLibrary_bfmas")
 }
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(0, -10)
+scale = Vector2(0.14, 0.14)
+energy = 0.5
+texture = ExtResource("5_x428u")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+position = Vector2(0, -10)
+scale = Vector2(0.14, 0.14)
+occluder = SubResource("OccluderPolygon2D_sykwi")
