@@ -40,7 +40,6 @@ public partial class Level : Node2D
 	}
 	
 	private void _on_day_night_timeout() {
-		GD.Print("YES");
 		switch (_lightState) {
 			case LightState.Morning: {
 				MorningState();
