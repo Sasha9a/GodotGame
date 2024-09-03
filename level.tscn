@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://b6wqhg16n7ksj"]
+[gd_scene load_steps=19 format=3 uid="uid://b6wqhg16n7ksj"]
 
 [ext_resource type="PackedScene" uid="uid://pcqjjul3cipu" path="res://Player/player.tscn" id="1_1ech4"]
 [ext_resource type="Script" path="res://Level.cs" id="1_lif2i"]
@@ -429,6 +429,58 @@ texture = ExtResource("5_fdoos")
 physics_layer_0/collision_layer = 1
 sources/1 = SubResource("TileSetAtlasSource_b0emj")
 
+[sub_resource type="Animation" id="Animation_pln88"]
+resource_name = "day_text_fade_in"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DayLabel:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0.713726)]
+}
+
+[sub_resource type="Animation" id="Animation_1uhqn"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DayLabel:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_7hhbs"]
+resource_name = "day_text_fade_out"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DayLabel:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0.713726), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_grnmy"]
+_data = {
+"RESET": SubResource("Animation_1uhqn"),
+"day_text_fade_in": SubResource("Animation_pln88"),
+"day_text_fade_out": SubResource("Animation_7hhbs")
+}
+
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_m0p2d"]
 polygon = PackedVector2Array(-5087, 584, -5088, 689, 5072, 688, 5072, 582)
 
@@ -501,6 +553,20 @@ offset_bottom = 79.0
 theme_override_font_sizes/font_size = 30
 text = "GOLD: 0"
 script = ExtResource("8_hbqa0")
+
+[node name="DayLabel" type="Label" parent="CanvasLayer"]
+modulate = Color(1, 1, 1, 0)
+offset_left = 458.0
+offset_top = 121.0
+offset_right = 771.0
+offset_bottom = 231.0
+theme_override_font_sizes/font_size = 80
+text = "DAY"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer"]
+libraries = {
+"": SubResource("AnimationLibrary_grnmy")
+}
 
 [node name="Collectibles" type="Node2D" parent="."]
 script = ExtResource("9_l2iy7")
