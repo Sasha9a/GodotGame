@@ -70,6 +70,8 @@ jump={
 2d_physics/layer_1="world"
 2d_physics/layer_2="player"
 2d_physics/layer_3="enemies"
+2d_physics/layer_5="playerHurtBox"
+2d_physics/layer_6="enemyHurtBox"
 
 [rendering]
 

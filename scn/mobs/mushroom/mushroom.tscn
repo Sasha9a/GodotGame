@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://3hc8uuqkkr36"]
+[gd_scene load_steps=45 format=3 uid="uid://3hc8uuqkkr36"]
 
 [ext_resource type="Script" path="res://scn/mobs/mushroom/Mushroom.cs" id="1_2b1ti"]
 [ext_resource type="Texture2D" uid="uid://dw6tcfewvihh2" path="res://assets/oak_woods_v1.0/Mushroom/Attack.png" id="1_c7nfo"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://d2dtue66j0oy6" path="res://assets/oak_woods_v1.0/Mushroom/Death.png" id="3_phv71"]
 [ext_resource type="Texture2D" uid="uid://ctrawgcc7ytgk" path="res://assets/oak_woods_v1.0/Mushroom/Idle.png" id="4_ryw7w"]
 [ext_resource type="Texture2D" uid="uid://d08wanlra3d18" path="res://assets/oak_woods_v1.0/Mushroom/Run.png" id="5_ooo1q"]
+[ext_resource type="PackedScene" uid="uid://b376vlblrnbga" path="res://scn/damage_box/damage_box.tscn" id="7_xqxy7"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_705un"]
 
@@ -387,12 +388,13 @@ collision_layer = 4
 script = ExtResource("1_2b1ti")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("CapsuleShape2D_705un")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -11)
 sprite_frames = SubResource("SpriteFrames_l0p4o")
-animation = &"Attack"
+animation = &"Idle"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -407,7 +409,24 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackDirection/AttackRange"]
+visible = false
 position = Vector2(16.5, -2)
 shape = SubResource("RectangleShape2D_joanx")
 
+[node name="DamageBox" parent="AttackDirection" instance=ExtResource("7_xqxy7")]
+
+[node name="HurtBox" parent="AttackDirection/DamageBox" index="0"]
+collision_layer = 32
+collision_mask = 0
+
+[node name="HitBox" parent="AttackDirection/DamageBox" index="1"]
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionShape2D" parent="AttackDirection/DamageBox/HitBox" index="0"]
+position = Vector2(16, 0)
+
 [connection signal="body_entered" from="AttackDirection/AttackRange" to="." method="_on_attack_range_body_entered"]
+[connection signal="area_entered" from="AttackDirection/DamageBox/HitBox" to="." method="_on_hit_box_area_entered"]
+
+[editable path="AttackDirection/DamageBox"]

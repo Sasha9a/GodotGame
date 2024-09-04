@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://b376vlblrnbga"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jvhe5"]
+radius = 9.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ub5oh"]
+radius = 8.0
+
+[node name="DamageBox" type="Node2D"]
+
+[node name="HurtBox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
+shape = SubResource("CircleShape2D_jvhe5")
+
+[node name="HitBox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+position = Vector2(21, 0)
+shape = SubResource("CircleShape2D_ub5oh")

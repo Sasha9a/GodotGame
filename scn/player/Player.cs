@@ -5,10 +5,13 @@ public partial class Player : CharacterBody2D {
 	private enum State {
 		Move,
 		Attack,
-		Attack2,
-		Attack3,
+		Combo1,
+		Combo2,
 		Block,
-		Slide
+		Slide,
+		Damage,
+		Cast,
+		Death
 	}
 	
 	private const float Speed = 150.0f;
@@ -33,9 +36,20 @@ public partial class Player : CharacterBody2D {
 		_signals = GetNode<Signals>("/root/Signals");
 		_animNode = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		_animPlayerNode = GetNode<AnimationPlayer>("AnimationPlayer");
+		
+		_signals.Connect(Signals.SignalName.EnemyAttack, Callable.From((float enemyDamage) => _on_damage_received(enemyDamage)));
 	}
 
 	public override void _PhysicsProcess(double delta) {
+		if (GetHealth() <= 0f) {
+			_animPlayerNode.Play("Death");
+			if (!_isAnimSetCallback) {
+				_animPlayerNode.AnimationFinished += Death;
+				_isAnimSetCallback = true;
+			}
+			return;
+		}
+		
 		switch (_state) {
 			case State.Move:
 				MoveState();
@@ -49,12 +63,16 @@ public partial class Player : CharacterBody2D {
 			case State.Attack:
 				AttackState();
 				break;
-			case State.Attack2:
-				Attack2State();
+			case State.Combo1:
+				Combo1State();
 				break;
-			case State.Attack3:
-				Attack3State();
+			case State.Combo2:
+				Combo2State();
 				break;
+			case State.Damage: {
+				DamageState();
+				break;
+			}
 		}
 
 		// Add the gravity.
@@ -70,12 +88,6 @@ public partial class Player : CharacterBody2D {
 
 		if (Velocity.Y > 0f) {
 			_animPlayerNode.Play("Fall");
-		}
-
-		if (GetHealth() == 0f) {
-			_animPlayerNode.Play("Death");
-			_animPlayerNode.AnimationFinished += Death;
-			return;
 		}
 		
 		MoveAndSlide();
@@ -154,7 +166,7 @@ public partial class Player : CharacterBody2D {
 
 	private void AttackState() {
 		if (Input.IsActionJustPressed("attack") && _combo) {
-			_state = State.Attack2;
+			_state = State.Combo1;
 		}
 		Velocity = new Vector2(0, Velocity.Y);
 		_animPlayerNode.Play("Attack");
@@ -164,23 +176,38 @@ public partial class Player : CharacterBody2D {
 		}
 	}
 	
-	private void Attack2State() {
+	private void Combo1State() {
 		if (Input.IsActionJustPressed("attack") && _combo) {
-			_state = State.Attack3;
+			_state = State.Combo2;
 		}
 		_animPlayerNode.Play("Attack2");
 		if (!_isAnimSetCallback) {
-			_animPlayerNode.AnimationFinished += Attack1Finish;
+			_animPlayerNode.AnimationFinished += ComboFinish;
 			_isAnimSetCallback = true;
 		}
 	}
 	
-	private void Attack3State() {
+	private void Combo2State() {
 		_animPlayerNode.Play("Attack3");
 		if (!_isAnimSetCallback) {
-			_animPlayerNode.AnimationFinished += Attack1Finish;
+			_animPlayerNode.AnimationFinished += ComboFinish;
 			_isAnimSetCallback = true;
 		}
+	}
+
+	private void DamageState() {
+		Velocity = new Vector2(0, Velocity.Y);
+		_animPlayerNode.Play("Damage");
+		if (!_isAnimSetCallback) {
+			_animPlayerNode.AnimationFinished += DamageFinish;
+			_isAnimSetCallback = true;
+		}
+	}
+
+	private void DamageFinish(StringName name) {
+		_animPlayerNode.AnimationFinished -= DamageFinish;
+		_isAnimSetCallback = false;
+		_state = State.Move;
 	}
 
 	private void Death(StringName name) {
@@ -202,8 +229,8 @@ public partial class Player : CharacterBody2D {
 		_state = State.Move;
 	}
 	
-	private void Attack1Finish(StringName name) {
-		_animPlayerNode.AnimationFinished -= Attack1Finish;
+	private void ComboFinish(StringName name) {
+		_animPlayerNode.AnimationFinished -= ComboFinish;
 		_isAnimSetCallback = false;
 		_state = State.Move;
 	}
@@ -231,5 +258,10 @@ public partial class Player : CharacterBody2D {
 	private void AttackFreezeFinish() {
 		_attackCooldownTimer.Timeout -= AttackFreezeFinish;
 		_attackCooldown = false;
+	}
+
+	private void _on_damage_received(float damage) {
+		_state = State.Damage;
+		SetDamage(damage);
 	}
 }

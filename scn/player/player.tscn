@@ -1,10 +1,11 @@
-[gd_scene load_steps=102 format=3 uid="uid://pcqjjul3cipu"]
+[gd_scene load_steps=103 format=3 uid="uid://pcqjjul3cipu"]
 
 [ext_resource type="Texture2D" uid="uid://y3lcluj7010m" path="res://assets/oak_woods_v1.0/character/char_blue.png" id="1_0sivr"]
 [ext_resource type="Script" path="res://scn/player/Player.cs" id="1_5lhbe"]
 [ext_resource type="Texture2D" uid="uid://cqpi2s70g4v1x" path="res://assets/oak_woods_v1.0/character/blue/char_blue_1.png" id="2_ojqep"]
 [ext_resource type="Texture2D" uid="uid://dyrhcbeje2i6x" path="res://assets/oak_woods_v1.0/character/blue/char_blue_2.png" id="3_uv1v6"]
 [ext_resource type="Texture2D" uid="uid://1y8hg5oig7fe" path="res://assets/oak_woods_v1.0/decorations/circle.png" id="5_x428u"]
+[ext_resource type="PackedScene" uid="uid://b376vlblrnbga" path="res://scn/damage_box/damage_box.tscn" id="6_hc5mu"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bc3th"]
 
@@ -1008,12 +1009,13 @@ collision_layer = 2
 script = ExtResource("1_5lhbe")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("CapsuleShape2D_bc3th")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(1, -13)
 sprite_frames = SubResource("SpriteFrames_7i3ay")
-animation = &"Attack"
+animation = &"Damage"
 autoplay = "Idle"
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -1040,3 +1042,20 @@ texture = ExtResource("5_x428u")
 position = Vector2(0, -10)
 scale = Vector2(0.14, 0.14)
 occluder = SubResource("OccluderPolygon2D_sykwi")
+
+[node name="AttackDirection" type="Node2D" parent="."]
+
+[node name="DamageBox" parent="AttackDirection" instance=ExtResource("6_hc5mu")]
+
+[node name="HurtBox" parent="AttackDirection/DamageBox" index="0"]
+collision_layer = 16
+collision_mask = 0
+
+[node name="HitBox" parent="AttackDirection/DamageBox" index="1"]
+collision_layer = 0
+collision_mask = 32
+
+[node name="CollisionShape2D" parent="AttackDirection/DamageBox/HitBox" index="0"]
+position = Vector2(18, 0)
+
+[editable path="AttackDirection/DamageBox"]

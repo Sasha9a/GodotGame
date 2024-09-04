@@ -29,6 +29,7 @@ public partial class Mushroom : CharacterBody2D {
 
 	private Vector2 _player;
 	private Vector2 _direction;
+	private float _damage = 20f;
 
 	private Signals _signals;
 	private AnimationPlayer _animationPlayer;
@@ -97,5 +98,9 @@ public partial class Mushroom : CharacterBody2D {
 			_animatedSprite.FlipH = false;
 			_attackDirection.RotationDegrees = 0f;
 		}
+	}
+
+	private void _on_hit_box_area_entered(Area2D area) {
+		_signals.EmitSignal(Signals.SignalName.EnemyAttack, _damage);
 	}
 }
