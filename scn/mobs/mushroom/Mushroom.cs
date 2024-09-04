@@ -27,17 +27,32 @@ public partial class Mushroom : CharacterBody2D {
 		}
 	}
 
+	private Vector2 _player;
+	private Vector2 _direction;
+
+	private Signals _signals;
 	private AnimationPlayer _animationPlayer;
+	private AnimatedSprite2D _animatedSprite;
 	private CollisionShape2D _attackRangeCollision;
+	private Node2D _attackDirection;
 	
 	public override void _Ready() {
+		_signals = GetNode<Signals>("/root/Signals");
+		_signals.Connect(Signals.SignalName.PlayerPositionUpdate, Callable.From((Vector2 position) => _on_player_position_update(position)));
+		
 		_animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
 		_attackRangeCollision = GetNode<CollisionShape2D>("AttackDirection/AttackRange/CollisionShape2D");
+		_animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+		_attackDirection = GetNode<Node2D>("AttackDirection");
 	}
 
 	public override void _PhysicsProcess(double delta) {
 		if (!IsOnFloor()) {
 			Velocity += GetGravity() * (float)delta;
+		}
+
+		if (State == StateEnum.Chase) {
+			ChaseState();
 		}
 		
 		MoveAndSlide();
@@ -66,5 +81,21 @@ public partial class Mushroom : CharacterBody2D {
 	private void IdleFinished() {
 		_attackRangeCollision.Disabled = false;
 		State = StateEnum.Chase;
+	}
+
+	private void _on_player_position_update(Vector2 position) {
+		_player = position;
+	}
+
+	private void ChaseState() {
+		_direction = (_player - Position).Normalized();
+		if (_direction.X < 0f) {
+			_animatedSprite.FlipH = true;
+			_attackDirection.RotationDegrees = 180f;
+		}
+		else if (_direction.X > 0f) {
+			_animatedSprite.FlipH = false;
+			_attackDirection.RotationDegrees = 0f;
+		}
 	}
 }

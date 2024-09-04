@@ -14,6 +14,7 @@ public partial class Player : CharacterBody2D {
 	private const float Speed = 150.0f;
 	private const float JumpVelocity = -400.0f;
 
+	private Signals _signals;
 	private AnimatedSprite2D _animNode;
 	private AnimationPlayer _animPlayerNode;
 	private float _health = 100f;
@@ -21,6 +22,7 @@ public partial class Player : CharacterBody2D {
 	private State _state = State.Move;
 	private float _runSpeed = 0.5f;
 	private bool _combo;
+	private Vector2 _playerPos;
 
 	private SceneTreeTimer _attackCooldownTimer;
 	private bool _attackCooldown;
@@ -28,6 +30,7 @@ public partial class Player : CharacterBody2D {
 	private bool _isAnimSetCallback;
 
 	public override void _Ready() {
+		_signals = GetNode<Signals>("/root/Signals");
 		_animNode = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		_animPlayerNode = GetNode<AnimationPlayer>("AnimationPlayer");
 	}
@@ -76,6 +79,9 @@ public partial class Player : CharacterBody2D {
 		}
 		
 		MoveAndSlide();
+
+		_playerPos = Position;
+		_signals.EmitSignal(Signals.SignalName.PlayerPositionUpdate, _playerPos);
 	}
 
 	public float GetHealth() {

@@ -15,6 +15,10 @@ run/main_scene="res://scn/menu/menu.tscn"
 config/features=PackedStringArray("4.3", "C#", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Signals="*res://scn/Signals.cs"
+
 [dotnet]
 
 project/assembly_name="Godot First Game"
